@@ -13,6 +13,13 @@ namespace AdventOfCode2020.Runner
             var result = day1Part1.Solve();
 
             Console.WriteLine(result);
+
+
+            var day1Part2 = new Puzzle<Puzzles.Day01.Part2, IEnumerable<int>, int>();
+            day1Part2.ValidateSample();
+            var result2 = day1Part2.Solve();
+
+            Console.WriteLine(result2);
         }
     }
 }
