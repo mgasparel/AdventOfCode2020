@@ -1,5 +1,6 @@
-﻿using AdventOfCode2020.Infrastructure;
-using AdventOfCode2020.Puzzles;
+﻿using System;
+using System.Collections.Generic;
+using AdventOfCode2020.Infrastructure;
 
 namespace AdventOfCode2020.Runner
 {
@@ -7,8 +8,11 @@ namespace AdventOfCode2020.Runner
     {
         static void Main(string[] args)
         {
-            var day1 = new Puzzle<Day01, int>();
+            var day1Part1 = new Puzzle<Puzzles.Day01.Part1, IEnumerable<int>, int>();
+            day1Part1.ValidateSample();
+            var result = day1Part1.Solve();
 
+            Console.WriteLine(result);
         }
     }
 }
