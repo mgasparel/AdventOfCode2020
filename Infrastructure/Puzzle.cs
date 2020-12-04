@@ -5,7 +5,7 @@ using System.Reflection;
 
 namespace AdventOfCode2020.Infrastructure
 {
-    public class Puzzle<T, TInput, TAnswer>
+    public class Puzzle<T, TAnswer>
     {
         public static string rootPath = @"..\";
         readonly Assembly puzzlesAssembly;
