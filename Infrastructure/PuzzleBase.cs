@@ -10,11 +10,7 @@ namespace AdventOfCode2020.Infrastructure
 
         public abstract TAnswer Solve(TInput input);
 
-        public void ValidateSample(TInput input)
-        {
-            TAnswer result = Solve(input);
-
-            System.Diagnostics.Debug.Assert(EqualityComparer<TAnswer>.Default.Equals(result, SampleAnswer));
-        }
+        public bool ValidateSample(TInput input)
+            => EqualityComparer<TAnswer>.Default.Equals(Solve(input), SampleAnswer);
     }
 }

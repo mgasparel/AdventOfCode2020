@@ -4,7 +4,8 @@ using AdventOfCode2020.Infrastructure;
 
 namespace AdventOfCode2020.Runner
 {
-    public record ReflectedPuzzle(Type GenericPuzzle, object Instance);
+    public record ReflectedPuzzle(string Name, Type GenericPuzzle, object Instance);
+    public record PuzzleOutput(string Name, object? Result, Exception? Exception);
 
     class Program
     {
@@ -15,15 +16,9 @@ namespace AdventOfCode2020.Runner
         {
             foreach(var puzzleGenericType in puzzleLocator.Puzzles)
             {
-                Console.WriteLine($"Running puzzle: {puzzleGenericType.FullName}");
-
                 ReflectedPuzzle puzzle = BuildPuzzle(puzzleGenericType);
 
-                RunSample(puzzle);
-
-                object answer = RunSolution(puzzle);
-
-                Console.WriteLine(answer);
+                RenderResults(Run(puzzle, "ValidateSample"), Run(puzzle, "Solve"));
             }
         }
 
@@ -32,42 +27,39 @@ namespace AdventOfCode2020.Runner
             Type constructed = puzzleType.MakeGenericType(new Type[] { puzzleGenericType });
             object instance = Activator.CreateInstance(constructed, puzzleLocator);
 
-            return new ReflectedPuzzle(constructed, instance);
+            return new ReflectedPuzzle(puzzleGenericType.FullName, constructed, instance);
         }
 
-        static void RunSample(ReflectedPuzzle puzzle)
-        {
-            try
-            {
-                CallMethod(puzzle, "ValidateSample");
-                Console.WriteLine("Sample validated");
-            }
-            catch(Exception)
-            {
-                Console.WriteLine("Sample failed to validate!");
-            }
-        }
-
-        static object? RunSolution(ReflectedPuzzle puzzle)
+        static PuzzleOutput Run(ReflectedPuzzle puzzle, string method)
         {
             object? retVal = null;
+            Exception? caughtException = null;
             try
             {
-                retVal = CallMethod(puzzle, "Solve");
+                retVal = CallMethod(puzzle, method);
             }
             catch(Exception e)
             {
-                Console.WriteLine($"Exception during solution execution: {e.Message}");
-                Console.WriteLine(e.StackTrace);
+                caughtException = e;
             }
 
-            return retVal;
+            return new PuzzleOutput(puzzle.Name, retVal, caughtException);
         }
 
         static object? CallMethod(ReflectedPuzzle puzzle, string method)
             => puzzle.GenericPuzzle
                     .GetMethod(method)
                     .Invoke(puzzle.Instance, null);
+
+        static void RenderResults(PuzzleOutput sampleOutput, PuzzleOutput solutionOutput)
+        {
+            Console.WriteLine("================");
+            Console.WriteLine(sampleOutput.Name);
+            Console.Write("Sample Passed?: ");
+            Console.WriteLine(((bool?)sampleOutput.Result) ?? false ? "Y" : "N");
+            Console.Write("Solution: ");
+            Console.WriteLine(solutionOutput.Result);
+        }
 
     }
 }
