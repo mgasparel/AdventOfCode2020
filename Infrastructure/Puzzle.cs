@@ -57,16 +57,30 @@ namespace AdventOfCode2020.Infrastructure
 
         public void ReflectPuzzles()
         {
-            var puzzleBase = typeof(PuzzleBase<,>);
-
             puzzles = puzzlesAssembly
                 .GetReferencedAssemblies()
                 .Select(a => Assembly.Load(a))
                 .SelectMany(x => x.DefinedTypes)
-                .Where(t =>
-                    t.BaseType.Namespace == puzzleBase.Namespace
-                        && t.BaseType.Name == puzzleBase.Name)
+                .Where(t => InheritsGeneric(t, typeof(PuzzleBase<,>)))
                 .ToHashSet<Type>();
+        }
+
+        bool InheritsGeneric(Type t, Type generic)
+        {
+            Type? baseType = t.BaseType;
+            while(baseType is not null && baseType != typeof(object))
+            {
+                var typeDef = baseType.IsGenericType ? baseType.GetGenericTypeDefinition() : null;
+
+                if (typeDef == generic)
+                {
+                    return true;
+                }
+
+                baseType = baseType.BaseType;
+            }
+
+            return false;
         }
     }
 }
