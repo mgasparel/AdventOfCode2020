@@ -57,16 +57,15 @@ namespace AdventOfCode2020.Infrastructure
 
         public void ReflectPuzzles()
         {
-            var ipuz = typeof(IPuzzle<,>);
+            var puzzleBase = typeof(PuzzleBase<,>);
 
             puzzles = puzzlesAssembly
                 .GetReferencedAssemblies()
                 .Select(a => Assembly.Load(a))
                 .SelectMany(x => x.DefinedTypes)
                 .Where(t =>
-                    t.ImplementedInterfaces.Any(i =>
-                        i.Namespace == ipuz.Namespace
-                        && i.Name == ipuz.Name))
+                    t.BaseType.Namespace == puzzleBase.Namespace
+                        && t.BaseType.Name == puzzleBase.Name)
                 .ToHashSet<Type>();
         }
     }

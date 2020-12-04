@@ -5,23 +5,19 @@ using AdventOfCode2020.Infrastructure;
 
 namespace AdventOfCode2020.Puzzles.Day01
 {
-    public class Part1 : IPuzzle<IEnumerable<int>, int>
+    public class Part1 : PuzzleBase<IEnumerable<int>, int>
     {
         const int target = 2020;
 
-        public int SampleAnswer => 514579;
+        public override int SampleAnswer => 514579;
 
-        public Part1()
-        {
-        }
-
-        public IEnumerable<int> ParseInput(string rawInput)
+        public override IEnumerable<int> ParseInput(string rawInput)
             => rawInput
                 .Split(Environment.NewLine)
                 .Where(line => line.Length > 0)
                 .Select(line => int.Parse(line));
 
-        public int Solve(IEnumerable<int> input)
+        public override int Solve(IEnumerable<int> input)
         {
             foreach(var a in input)
             {
@@ -35,13 +31,6 @@ namespace AdventOfCode2020.Puzzles.Day01
             }
 
             return 0;
-        }
-
-        public void ValidateSample(IEnumerable<int> input)
-        {
-            int result = Solve(input);
-
-            System.Diagnostics.Debug.Assert(result ==  SampleAnswer);
         }
     }
 }
