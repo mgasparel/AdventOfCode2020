@@ -22,9 +22,9 @@ namespace AdventOfCode2020.Runner
             // Console.WriteLine(result2);
 
 
-            var day2Part1 = new Puzzle<Puzzles.Day02.Part1, int>();
-            day2Part1.ValidateSample();
-            var result = day2Part1.Solve();
+            var day2Part2 = new Puzzle<Puzzles.Day02.Part2, int>();
+            day2Part2.ValidateSample();
+            var result = day2Part2.Solve();
             Console.WriteLine(result);
         }
     }
