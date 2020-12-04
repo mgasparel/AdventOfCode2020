@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace AdventOfCode2020.Infrastructure
@@ -8,26 +6,24 @@ namespace AdventOfCode2020.Infrastructure
     public class Puzzle<T>
     {
         public static string rootPath = @"..\";
-        readonly Assembly puzzlesAssembly;
-        static HashSet<Type> puzzles;
+        readonly PuzzleLocator puzzleLocator;
         readonly string sampleFile;
         readonly string inputFile;
         readonly string puzzlePath;
 
-        public Puzzle()
+        public Puzzle(PuzzleLocator locator)
         {
+            var a = Assembly.GetCallingAssembly();
             string day = typeof(T).Namespace.Split('.')[^1];
             puzzlePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(rootPath, "Puzzles", day, "Input"));
             sampleFile = System.IO.Path.Combine(puzzlePath, "sample.txt");
             inputFile = System.IO.Path.Combine(puzzlePath, "input.txt");
-
-            this.puzzlesAssembly = Assembly.GetCallingAssembly();
-            ReflectPuzzles();
+            puzzleLocator = locator;
         }
 
         public void ValidateSample()
         {
-            puzzles.TryGetValue(typeof(T), out Type puzzleType);
+            var puzzleType = puzzleLocator.Get<T>();
 
             var instance = (T)Activator.CreateInstance(puzzleType);
 
@@ -38,7 +34,7 @@ namespace AdventOfCode2020.Infrastructure
 
         public object Solve()
         {
-            puzzles.TryGetValue(typeof(T), out Type puzzleType);
+            var puzzleType = puzzleLocator.Get<T>();
 
             var instance = (T)Activator.CreateInstance(puzzleType);
 
@@ -53,34 +49,6 @@ namespace AdventOfCode2020.Infrastructure
 
             MethodInfo parseInput = type.GetMethod("ParseInput");
             return parseInput.Invoke(instance, new[] { input });
-        }
-
-        public void ReflectPuzzles()
-        {
-            puzzles = puzzlesAssembly
-                .GetReferencedAssemblies()
-                .Select(a => Assembly.Load(a))
-                .SelectMany(x => x.DefinedTypes)
-                .Where(t => InheritsGeneric(t, typeof(PuzzleBase<,>)))
-                .ToHashSet<Type>();
-        }
-
-        bool InheritsGeneric(Type t, Type generic)
-        {
-            Type? baseType = t.BaseType;
-            while(baseType is not null && baseType != typeof(object))
-            {
-                var typeDef = baseType.IsGenericType ? baseType.GetGenericTypeDefinition() : null;
-
-                if (typeDef == generic)
-                {
-                    return true;
-                }
-
-                baseType = baseType.BaseType;
-            }
-
-            return false;
         }
     }
 }

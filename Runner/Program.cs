@@ -1,31 +1,73 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Reflection;
 using AdventOfCode2020.Infrastructure;
 
 namespace AdventOfCode2020.Runner
 {
+    public record ReflectedPuzzle(Type GenericPuzzle, object Instance);
+
     class Program
     {
+        static PuzzleLocator puzzleLocator = new (Assembly.GetExecutingAssembly());
+        static Type puzzleType = typeof(Puzzle<>);
+
         static void Main(string[] args)
         {
-            // var day1Part1 = new Puzzle<Puzzles.Day01.Part1, int>();
-            // day1Part1.ValidateSample();
-            // var result = day1Part1.Solve();
+            foreach(var puzzleGenericType in puzzleLocator.Puzzles)
+            {
+                Console.WriteLine($"Running puzzle: {puzzleGenericType.FullName}");
 
-            // Console.WriteLine(result);
+                ReflectedPuzzle puzzle = BuildPuzzle(puzzleGenericType);
 
+                RunSample(puzzle);
 
-            // var day1Part2 = new Puzzle<Puzzles.Day01.Part2, int>();
-            // day1Part2.ValidateSample();
-            // var result2 = day1Part2.Solve();
+                object answer = RunSolution(puzzle);
 
-            // Console.WriteLine(result2);
-
-
-            var day2Part2 = new Puzzle<Puzzles.Day03.Part2>();
-            day2Part2.ValidateSample();
-            var result = day2Part2.Solve();
-            Console.WriteLine(result);
+                Console.WriteLine(answer);
+            }
         }
+
+        static ReflectedPuzzle BuildPuzzle(Type puzzleGenericType)
+        {
+            Type constructed = puzzleType.MakeGenericType(new Type[] { puzzleGenericType });
+            object instance = Activator.CreateInstance(constructed, puzzleLocator);
+
+            return new ReflectedPuzzle(constructed, instance);
+        }
+
+        static void RunSample(ReflectedPuzzle puzzle)
+        {
+            try
+            {
+                CallMethod(puzzle, "ValidateSample");
+                Console.WriteLine("Sample validated");
+            }
+            catch(Exception)
+            {
+                Console.WriteLine("Sample failed to validate!");
+            }
+        }
+
+        static object? RunSolution(ReflectedPuzzle puzzle)
+        {
+            object? retVal = null;
+            try
+            {
+                retVal = CallMethod(puzzle, "Solve");
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine($"Exception during solution execution: {e.Message}");
+                Console.WriteLine(e.StackTrace);
+            }
+
+            return retVal;
+        }
+
+        static object? CallMethod(ReflectedPuzzle puzzle, string method)
+            => puzzle.GenericPuzzle
+                    .GetMethod(method)
+                    .Invoke(puzzle.Instance, null);
+
     }
 }
