@@ -20,14 +20,12 @@ namespace AdventOfCode2020.Infrastructure
 
         public Type Get<T>()
         {
-            Puzzles.TryGetValue(typeof(T), out Type puzzleType);
-            return puzzleType;
-        }
+            if (Puzzles.TryGetValue(typeof(T), out Type? puzzleType))
+            {
+                return puzzleType;
+            }
 
-        public Type Get(Type type)
-        {
-            Puzzles.TryGetValue(type, out Type puzzleType);
-            return puzzleType;
+            throw new KeyNotFoundException($"Puzzle type not found: {typeof(T)}");
         }
 
         static bool InheritsGeneric(Type t, Type generic)

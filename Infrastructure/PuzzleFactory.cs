@@ -16,7 +16,7 @@ namespace AdventOfCode2020.Infrastructure
         public dynamic Build(Type puzzleGenericType)
         {
             Type constructed = puzzleType.MakeGenericType(new Type[] { puzzleGenericType });
-            dynamic instance = Activator.CreateInstance(constructed, puzzleLocator);
+            dynamic instance = Activator.CreateInstance(constructed, puzzleLocator)!;
 
             if (instance is null || puzzleGenericType.FullName is null)
             {

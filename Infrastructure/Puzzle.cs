@@ -13,8 +13,7 @@ namespace AdventOfCode2020.Infrastructure
 
         public Puzzle(PuzzleLocator locator)
         {
-            var a = Assembly.GetCallingAssembly();
-            string day = typeof(T).Namespace.Split('.')[^1];
+            string day = typeof(T).Namespace!.Split('.')[^1];
             puzzlePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(rootPath, "Puzzles", day, "Input"));
             sampleFile = System.IO.Path.Combine(puzzlePath, "sample.txt");
             inputFile = System.IO.Path.Combine(puzzlePath, "input.txt");
@@ -27,9 +26,9 @@ namespace AdventOfCode2020.Infrastructure
 
             var instance = (T)Activator.CreateInstance(puzzleType);
 
-            var parsedInput = GetParsedInput(sampleFile, puzzleType, instance);
-            MethodInfo validate = puzzleType.GetMethod("ValidateSample");
-            return (bool)validate.Invoke(instance, new[] { parsedInput });
+            var parsedInput = GetParsedInput(sampleFile, puzzleType, instance!);
+            MethodInfo? validate = puzzleType.GetMethod("ValidateSample");
+            return (bool)validate!.Invoke(instance, new[] { parsedInput })!;
         }
 
         public object Solve()
@@ -38,17 +37,17 @@ namespace AdventOfCode2020.Infrastructure
 
             var instance = (T)Activator.CreateInstance(puzzleType);
 
-            var parsedInput = GetParsedInput(inputFile, puzzleType, instance);
-            MethodInfo solve = puzzleType.GetMethod("Solve");
-            return solve.Invoke(instance, new[] { parsedInput });
+            var parsedInput = GetParsedInput(inputFile, puzzleType, instance!);
+            MethodInfo? solve = puzzleType.GetMethod("Solve");
+            return solve!.Invoke(instance, new[] { parsedInput })!;
         }
 
         object GetParsedInput(string fileName, Type type, object instance)
         {
             string input = System.IO.File.ReadAllText(fileName);
 
-            MethodInfo parseInput = type.GetMethod("ParseInput");
-            return parseInput.Invoke(instance, new[] { input });
+            MethodInfo parseInput = type.GetMethod("ParseInput")!;
+            return parseInput!.Invoke(instance, new[] { input })!;
         }
     }
 }
