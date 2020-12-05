@@ -1,14 +1,22 @@
-using System;
 using System.Collections.Generic;
 using Spectre.Console;
 
 namespace AdventOfCode2020.Infrastructure
 {
+    /// <summary>
+    ///     Outputs puzzle results to the Console.
+    /// </summary>
     public class OutputRenderer
     {
-        const string checkMark = "[green]✔[/]";
+        const string checkMark = "✔";
         const string crossMark = "❌";
 
+        /// <summary>
+        ///     Displays puzzle results in a formatted table.
+        /// </summary>
+        /// <param name="puzzleOutput">
+        ///     A list of puzzle results to be displayed.
+        /// </param>
         public static void RenderResults(List<(PuzzleOutput sample, PuzzleOutput puzzle)> puzzleOutput)
         {
             System.Console.OutputEncoding = System.Text.Encoding.UTF8;

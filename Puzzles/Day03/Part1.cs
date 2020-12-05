@@ -4,7 +4,7 @@ using AdventOfCode2020.Infrastructure;
 
 namespace AdventOfCode2020.Puzzles.Day03
 {
-    public class Part1 : PuzzleBase<RepeatingMap, long>
+    public class Part1 : Puzzle<RepeatingMap, long>
     {
         public override long SampleAnswer => 7;
 

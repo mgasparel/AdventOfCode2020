@@ -5,6 +5,9 @@ using System.Reflection;
 
 namespace AdventOfCode2020.Infrastructure
 {
+    /// <summary>
+    ///     This class is responsible for finding all tests that inherit from <see cref="Puzzle{TInput, TAnswer}"/>.
+    /// </summary>
     public class PuzzleLocator
     {
         public HashSet<Type> Puzzles;
@@ -14,7 +17,7 @@ namespace AdventOfCode2020.Infrastructure
             Puzzles ??= System.IO.Directory.GetFiles(AppDomain.CurrentDomain.BaseDirectory, "*.dll")
                 .Select(x => Assembly.Load(AssemblyName.GetAssemblyName(x)))
                 .SelectMany(x => x.DefinedTypes)
-                .Where(t => InheritsGeneric(t, typeof(PuzzleBase<,>)))
+                .Where(t => InheritsGeneric(t, typeof(Puzzle<,>)))
                 .ToHashSet<Type>();
         }
 

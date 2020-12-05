@@ -1,47 +1,57 @@
-using System;
-using System.Reflection;
+using System.Collections.Generic;
 
 namespace AdventOfCode2020.Infrastructure
 {
-    public class Puzzle<T>
+    /// <summary>
+    ///     Base class that all Puzzles need to implement to be discovered by the <see cref="PuzzleLocator"/>.
+    /// </summary>
+    /// <typeparam name="TInput">
+    ///     The input type for this puzzle, after the raw input has been parsed.
+    /// </typeparam>
+    /// <typeparam name="TAnswer">
+    ///     The return type of the answer.
+    /// </typeparam>
+    public abstract class Puzzle<TInput, TAnswer>
     {
-        public static string rootPath = @"..\";
-        readonly string sampleFile;
-        readonly string inputFile;
-        readonly string puzzlePath;
+        /// <summary>
+        ///     If the puzzle has a sample, provide a value to this property to get feedback on whether your solution
+        ///     can correctly solve the sample data.
+        /// </summary>
+        /// <value></value>
+        public abstract TAnswer SampleAnswer { get; }
 
-        public Puzzle()
-        {
-            string day = typeof(T).Namespace!.Split('.')[^1];
-            puzzlePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(rootPath, "Puzzles", day, "Input"));
-            sampleFile = System.IO.Path.Combine(puzzlePath, "sample.txt");
-            inputFile = System.IO.Path.Combine(puzzlePath, "input.txt");
-        }
+        /// <summary>
+        ///     Takes the raw data from file and parses it into the format expected by your Puzzle.
+        /// </summary>
+        /// <param name="rawInput">
+        ///     The string representation of your puzzle input.
+        /// </param>
+        /// <returns>
+        ///     Your parsed puzzle input.
+        /// </returns>
+        public abstract TInput ParseInput(string rawInput);
 
-        public bool ValidateSample()
-        {
-            var instance = (T)Activator.CreateInstance(typeof(T));
+        /// <summary>
+        ///     Runs the solution on the parsed input.
+        /// </summary>
+        /// <param name="input">
+        ///     The parsed puzzle input.
+        /// </param>
+        /// <returns>
+        ///     The answer to the puzzle.
+        /// </returns>
+        public abstract TAnswer Solve(TInput input);
 
-            var parsedInput = GetParsedInput(sampleFile, typeof(T), instance!);
-            MethodInfo? validate = typeof(T).GetMethod("ValidateSample");
-            return (bool)validate!.Invoke(instance, new[] { parsedInput })!;
-        }
-
-        public object Solve()
-        {
-            var instance = (T)Activator.CreateInstance(typeof(T));
-
-            var parsedInput = GetParsedInput(inputFile, typeof(T), instance!);
-            MethodInfo? solve = typeof(T).GetMethod("Solve");
-            return solve!.Invoke(instance, new[] { parsedInput })!;
-        }
-
-        object GetParsedInput(string fileName, Type type, object instance)
-        {
-            string input = System.IO.File.ReadAllText(fileName);
-
-            MethodInfo parseInput = type.GetMethod("ParseInput")!;
-            return parseInput!.Invoke(instance, new[] { input })!;
-        }
+        /// <summary>
+        ///     Checks whether your solution correctly solves your sample. See <seealso cref="SampleAnswer"/>.
+        /// </summary>
+        /// <param name="input">
+        ///     The parsed puzzle input.
+        /// </param>
+        /// <returns>
+        ///     Returns a value indicating whether your solution resulted in the expected sample answer.
+        /// </returns>
+        public bool ValidateSample(TInput input)
+            => EqualityComparer<TAnswer>.Default.Equals(Solve(input), SampleAnswer);
     }
 }

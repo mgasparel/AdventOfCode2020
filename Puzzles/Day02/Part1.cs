@@ -8,7 +8,7 @@ namespace AdventOfCode2020.Puzzles.Day02
     public record Password(string Value);
     public record Policy(int Min, int Max, char Character);
 
-    public class Part1 : PuzzleBase<IEnumerable<(Policy pol, Password pass)>, int>
+    public class Part1 : Puzzle<IEnumerable<(Policy pol, Password pass)>, int>
     {
         public override int SampleAnswer => 2;
 

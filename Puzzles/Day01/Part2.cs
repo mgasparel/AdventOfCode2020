@@ -5,7 +5,7 @@ using AdventOfCode2020.Infrastructure;
 
 namespace AdventOfCode2020.Puzzles.Day01
 {
-    public class Part2 : PuzzleBase<IEnumerable<int>, int>
+    public class Part2 : Puzzle<IEnumerable<int>, int>
     {
         const int target = 2020;
 

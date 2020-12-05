@@ -5,7 +5,7 @@ using AdventOfCode2020.Infrastructure;
 
 namespace AdventOfCode2020.Puzzles.Day04
 {
-    public class Part1 : PuzzleBase<IEnumerable<Passport>, int>
+    public class Part1 : Puzzle<IEnumerable<Passport>, int>
     {
         public override int SampleAnswer => 2;
 
