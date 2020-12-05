@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using AdventOfCode2020.Infrastructure;
 
 namespace AdventOfCode2020.Runner
@@ -15,15 +16,20 @@ namespace AdventOfCode2020.Runner
 
         public void Run()
         {
+            var output = new List<(PuzzleOutput sample, PuzzleOutput puzzle)>();
             foreach(var puzzleGenericType in puzzleLocator.Puzzles)
             {
                 var puzzle = puzzleFactory.Build(puzzleGenericType);
-                var name = puzzleGenericType.Namespace;
+                var name = puzzleGenericType.FullName;
 
-                OutputRenderer.RenderResults(
-                    Run(name, () => puzzle.ValidateSample()),
-                    Run(name, () => puzzle.Solve()));
+                output.Add(
+                    (
+                        Run(name, () => puzzle.ValidateSample()),
+                        Run(name, () => puzzle.Solve())
+                    ));
             }
+
+            OutputRenderer.RenderResults(output);
         }
 
         PuzzleOutput Run(string puzzleName, Func<object?> func)
