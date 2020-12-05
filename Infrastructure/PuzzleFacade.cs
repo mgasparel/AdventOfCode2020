@@ -11,18 +11,16 @@ namespace AdventOfCode2020.Infrastructure
     public class PuzzleFacade<T>
     {
         public static string rootPath = @"..\";
-        readonly PuzzleLocator puzzleLocator;
         readonly string sampleFile;
         readonly string inputFile;
         readonly string puzzlePath;
 
-        public PuzzleFacade(PuzzleLocator locator)
+        public PuzzleFacade()
         {
             string day = typeof(T).Namespace!.Split('.')[^1];
             puzzlePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(rootPath, "Puzzles", day, "Input"));
             sampleFile = System.IO.Path.Combine(puzzlePath, "sample.txt");
             inputFile = System.IO.Path.Combine(puzzlePath, "input.txt");
-            puzzleLocator = locator;
         }
 
         /// <summary>

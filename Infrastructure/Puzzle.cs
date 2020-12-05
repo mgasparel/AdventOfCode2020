@@ -51,7 +51,7 @@ namespace AdventOfCode2020.Infrastructure
         /// <returns>
         ///     Returns a value indicating whether your solution resulted in the expected sample answer.
         /// </returns>
-        public bool ValidateSample(TInput input)
+        public virtual bool ValidateSample(TInput input)
             => EqualityComparer<TAnswer>.Default.Equals(Solve(input), SampleAnswer);
     }
 }
