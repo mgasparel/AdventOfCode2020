@@ -1,60 +1,20 @@
-﻿using System;
-using System.Reflection;
-using AdventOfCode2020.Infrastructure;
+﻿using AdventOfCode2020.Infrastructure;
+using AdventOfCode2020.Runner;
+using Microsoft.Extensions.DependencyInjection;
 
-PuzzleLocator puzzleLocator = new (Assembly.GetExecutingAssembly());
-Type puzzleType = typeof(Puzzle<>);
+var serviceCollection = new ServiceCollection();
+RegisterServices(serviceCollection);
 
-foreach(var puzzleGenericType in puzzleLocator.Puzzles)
+using(var services = serviceCollection.BuildServiceProvider())
 {
-    ReflectedPuzzle puzzle = BuildPuzzle(puzzleGenericType);
-
-    RenderResults(Run(puzzle, "ValidateSample"), Run(puzzle, "Solve"));
+    services
+        .GetRequiredService<PuzzleRunner>()
+        .Run();
 }
 
-ReflectedPuzzle BuildPuzzle(Type puzzleGenericType)
+static void RegisterServices(IServiceCollection services)
 {
-    Type constructed = puzzleType.MakeGenericType(new Type[] { puzzleGenericType });
-    object? instance = Activator.CreateInstance(constructed, puzzleLocator);
-
-    if (instance is null || puzzleGenericType.FullName is null)
-    {
-        throw new Exception($"Error building puzzle for type: {puzzleGenericType}");
-    }
-
-    return new ReflectedPuzzle(puzzleGenericType.FullName, constructed, instance);
+    services.AddSingleton(typeof(PuzzleRunner));
+    services.AddSingleton(typeof(PuzzleLocator));
+    services.AddSingleton(typeof(PuzzleFactory));
 }
-
-PuzzleOutput Run(ReflectedPuzzle puzzle, string method)
-{
-    object? retVal = null;
-    Exception? caughtException = null;
-    try
-    {
-        retVal = CallMethod(puzzle, method);
-    }
-    catch(Exception e)
-    {
-        caughtException = e;
-    }
-
-    return new PuzzleOutput(puzzle.Name, retVal, caughtException);
-}
-
-object? CallMethod(ReflectedPuzzle puzzle, string method)
-    => puzzle.GenericPuzzle
-            .GetMethod(method)
-            ?.Invoke(puzzle.Instance, null);
-
-void RenderResults(PuzzleOutput sampleOutput, PuzzleOutput solutionOutput)
-{
-    Console.WriteLine("================");
-    Console.WriteLine(sampleOutput.Name);
-    Console.Write("Sample Passed?: ");
-    Console.WriteLine(((bool?)sampleOutput?.Result ?? false) ? "Y" : "N");
-    Console.Write("Solution: ");
-    Console.WriteLine(solutionOutput.Result);
-}
-
-public record ReflectedPuzzle(string Name, Type GenericPuzzle, object Instance);
-public record PuzzleOutput(string Name, object? Result, Exception? Exception);

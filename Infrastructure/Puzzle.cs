@@ -21,7 +21,7 @@ namespace AdventOfCode2020.Infrastructure
             puzzleLocator = locator;
         }
 
-        public void ValidateSample()
+        public bool ValidateSample()
         {
             var puzzleType = puzzleLocator.Get<T>();
 
@@ -29,7 +29,7 @@ namespace AdventOfCode2020.Infrastructure
 
             var parsedInput = GetParsedInput(sampleFile, puzzleType, instance);
             MethodInfo validate = puzzleType.GetMethod("ValidateSample");
-            validate.Invoke(instance, new[] { parsedInput });
+            return (bool)validate.Invoke(instance, new[] { parsedInput });
         }
 
         public object Solve()
