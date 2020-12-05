@@ -7,12 +7,13 @@ namespace AdventOfCode2020.Runner
 {
     public class PuzzleRunner
     {
-        PuzzleLocator puzzleLocator = new ();
-        PuzzleFactory puzzleFactory;
+        readonly PuzzleLocator puzzleLocator;
+        readonly PuzzleFactory puzzleFactory;
 
-        public PuzzleRunner(PuzzleFactory puzzleFactory)
+        public PuzzleRunner(PuzzleFactory puzzleFactory, PuzzleLocator puzzleLocator)
         {
             this.puzzleFactory = puzzleFactory;
+            this.puzzleLocator = puzzleLocator;
         }
 
         public void Run()
@@ -21,7 +22,7 @@ namespace AdventOfCode2020.Runner
             foreach(var puzzleGenericType in puzzleLocator.Puzzles)
             {
                 var puzzle = puzzleFactory.Build(puzzleGenericType);
-                var name = puzzleGenericType.FullName;
+                var name = puzzleGenericType?.FullName ?? "N/A";
 
                 output.Add(
                     (

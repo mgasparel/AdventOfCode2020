@@ -18,16 +18,6 @@ namespace AdventOfCode2020.Infrastructure
                 .ToHashSet<Type>();
         }
 
-        public Type Get<T>()
-        {
-            if (Puzzles.TryGetValue(typeof(T), out Type? puzzleType))
-            {
-                return puzzleType;
-            }
-
-            throw new KeyNotFoundException($"Puzzle type not found: {typeof(T)}");
-        }
-
         static bool InheritsGeneric(Type t, Type generic)
         {
             Type? baseType = t.BaseType;

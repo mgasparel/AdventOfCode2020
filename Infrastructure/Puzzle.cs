@@ -6,39 +6,33 @@ namespace AdventOfCode2020.Infrastructure
     public class Puzzle<T>
     {
         public static string rootPath = @"..\";
-        readonly PuzzleLocator puzzleLocator;
         readonly string sampleFile;
         readonly string inputFile;
         readonly string puzzlePath;
 
-        public Puzzle(PuzzleLocator locator)
+        public Puzzle()
         {
             string day = typeof(T).Namespace!.Split('.')[^1];
             puzzlePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(rootPath, "Puzzles", day, "Input"));
             sampleFile = System.IO.Path.Combine(puzzlePath, "sample.txt");
             inputFile = System.IO.Path.Combine(puzzlePath, "input.txt");
-            puzzleLocator = locator;
         }
 
         public bool ValidateSample()
         {
-            var puzzleType = puzzleLocator.Get<T>();
+            var instance = (T)Activator.CreateInstance(typeof(T));
 
-            var instance = (T)Activator.CreateInstance(puzzleType);
-
-            var parsedInput = GetParsedInput(sampleFile, puzzleType, instance!);
-            MethodInfo? validate = puzzleType.GetMethod("ValidateSample");
+            var parsedInput = GetParsedInput(sampleFile, typeof(T), instance!);
+            MethodInfo? validate = typeof(T).GetMethod("ValidateSample");
             return (bool)validate!.Invoke(instance, new[] { parsedInput })!;
         }
 
         public object Solve()
         {
-            var puzzleType = puzzleLocator.Get<T>();
+            var instance = (T)Activator.CreateInstance(typeof(T));
 
-            var instance = (T)Activator.CreateInstance(puzzleType);
-
-            var parsedInput = GetParsedInput(inputFile, puzzleType, instance!);
-            MethodInfo? solve = puzzleType.GetMethod("Solve");
+            var parsedInput = GetParsedInput(inputFile, typeof(T), instance!);
+            MethodInfo? solve = typeof(T).GetMethod("Solve");
             return solve!.Invoke(instance, new[] { parsedInput })!;
         }
 
