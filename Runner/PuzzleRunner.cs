@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using AdventOfCode2020.Infrastructure;
 
 namespace AdventOfCode2020.Runner
@@ -34,6 +35,9 @@ namespace AdventOfCode2020.Runner
 
         PuzzleOutput Run(string puzzleName, Func<object?> func)
         {
+            var sw = new Stopwatch();
+            sw.Start();
+
             object? retVal = null;
             Exception? caughtException = null;
             try
@@ -45,7 +49,13 @@ namespace AdventOfCode2020.Runner
                 caughtException = e;
             }
 
-            return new PuzzleOutput(puzzleName, retVal, caughtException);
+            sw.Stop();
+
+            return new PuzzleOutput(
+                puzzleName,
+                retVal,
+                TimeSpan.FromMilliseconds(sw.ElapsedMilliseconds),
+                caughtException);
         }
     }
 }

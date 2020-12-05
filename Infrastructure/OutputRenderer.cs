@@ -17,6 +17,7 @@ namespace AdventOfCode2020.Infrastructure
             table.AddColumn("Puzzle");
             table.AddColumn("Sample");
             table.AddColumn("Answer");
+            table.AddColumn("Duration");
             table.AddColumn("Exception");
 
             table.Columns[1].Alignment(Justify.Center);
@@ -30,6 +31,7 @@ namespace AdventOfCode2020.Infrastructure
                     $"[green]{puzzle.Name}[/]",
                     sampleResult,
                     $"[{answerColor}]{(puzzle.Result?.ToString() ?? "N/A")}[/]",
+                    $"{puzzle.Duration.TotalMilliseconds + sample.Duration.TotalMilliseconds}ms",
                     $"[red]{(puzzle.Exception?.Message ?? "")}[/]");
             }
 
