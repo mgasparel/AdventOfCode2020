@@ -6,10 +6,8 @@ namespace AdventOfCode2020.Puzzles.Day04
     public class Passport
     {
         HashSet<string> mandatory = new() { "byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid" };
-
-        Dictionary<string, string> fields = new();
-
         string[] eyeColors = { "amb", "blu", "brn", "gry", "grn", "hzl", "oth" };
+        Dictionary<string, string> fields = new();
 
         public Passport(Dictionary<string, string> fields)
         {
@@ -17,39 +15,13 @@ namespace AdventOfCode2020.Puzzles.Day04
         }
 
         public bool IsValid()
-        {
-            foreach(var item in mandatory)
-            {
-                if (!fields.ContainsKey(item))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+            => mandatory.All(x => fields.ContainsKey(x));
 
         public bool IsStrictValid()
-        {
-            if (!IsValid())
-            {
-                return false;
-            }
-
-            foreach (var field in fields)
-            {
-                if (!IsFieldValid(field.Key, field.Value))
-                {
-                    return false;
-                }
-            }
-
-            return true;
-        }
+            => IsValid() && fields.All(f => IsFieldValid(f.Key, f.Value));
 
         bool IsFieldValid(string key, string value)
-        {
-            return key switch
+            => key switch
             {
                 "byr" => IsYearValid(value, 1920, 2002),
                 "iyr" => IsYearValid(value, 2010, 2020),
@@ -60,67 +32,31 @@ namespace AdventOfCode2020.Puzzles.Day04
                 "pid" => IsPidValid(value),
                 _ => true
             };
-        }
 
         private bool IsPidValid(string value)
-        {
-            if (value.Length != 9)
-            {
-                return false;
-            }
-
-            return long.TryParse(value, out long lValue);
-        }
+            => value.Length == 9
+                && long.TryParse(value, out _);
 
         private bool IsEyeColorValid(string value)
             => eyeColors.Contains(value);
 
         private bool IsHairColorValid(string value)
-        {
-            if(value[0] == '#' && value.Length == 7)
-            {
-                foreach(var c in value.ToLower())
-                {
-                    if(c < '0' && c > '9' && c < 'a' && c > 'z')
-                    {
-                        return false;
-                    }
-                }
-
-                return true;
-            }
-
-            return false;
-        }
+            => value[0] == '#'
+                && value.Length == 7
+                && value
+                    .ToLower()
+                    .Skip(1)
+                    .All(c => c >= '0' && c <= '9' || c>= 'a' && c <= 'z');
 
         private bool IsHeightValid(string value)
-        {
-            if (int.TryParse(value[..^2], out int iValue))
-            {
-                if (value[^2..] == "cm")
-                {
-                    return iValue >= 150 && iValue <= 193;
-                }
-
-                if (value[^2..] == "in")
-                {
-                    return iValue >= 59 && iValue <= 76;
-                }
-
-                return false;
-            }
-
-            return false;
-        }
+            => int.TryParse(value[..^2], out int iValue)
+                && value[^2..] == "cm"
+                    ? iValue >= 150 && iValue <= 193
+                    : iValue >= 59 && iValue <= 76;
 
         bool IsYearValid(string value, int min, int max)
-        {
-            if (int.TryParse(value, out int iValue))
-            {
-                return iValue >= min && iValue <= max;
-            }
-
-            return false;
-        }
+            => int.TryParse(value, out int iValue)
+                && iValue >= min
+                && iValue <= max;
     }
 }
