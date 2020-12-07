@@ -1,7 +1,6 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using AdventOfCode2020.Infrastructure;
+using AdventOfCode2020.Puzzles.Common;
 
 namespace AdventOfCode2020.Puzzles.Day03
 {
