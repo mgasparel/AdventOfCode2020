@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Spectre.Console;
 
 namespace AdventOfCode2020.Infrastructure
@@ -30,7 +31,7 @@ namespace AdventOfCode2020.Infrastructure
 
             table.Columns[1].Alignment(Justify.Center);
 
-            foreach(var (sample, puzzle) in puzzleOutput)
+            foreach(var (sample, puzzle) in puzzleOutput.OrderBy(x => x.puzzle.Name))
             {
                 var sampleResult = ((bool?)sample.Result) ?? false ? checkMark : crossMark;
                 var answerColor = puzzle.Result is null ? "grey" : "blue";
