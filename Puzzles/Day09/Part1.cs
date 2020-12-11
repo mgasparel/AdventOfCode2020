@@ -20,7 +20,7 @@ namespace AdventOfCode2020.Puzzles.Day09
         public override long Solve(long[] input)
             => FindInvalidNumber(input) ?? throw new System.Exception("Result not found!");
 
-        public override bool ValidateSample(long[] input)
+        public override SampleResult ValidateSample(long[] input)
         {
             // First time we hit a sample with different params as the solution.
             preamble = 5;

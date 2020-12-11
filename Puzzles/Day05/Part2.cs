@@ -1,3 +1,4 @@
+using AdventOfCode2020.Infrastructure;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -27,7 +28,8 @@ namespace AdventOfCode2020.Puzzles.Day05
         }
 
         // No sample provided.
-        public override bool ValidateSample(IEnumerable<BoardingInstructions> input) => true;
+        public override SampleResult ValidateSample(IEnumerable<BoardingInstructions> input)
+            => new SampleResult(true, null, null);
     }
 }
 

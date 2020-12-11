@@ -33,12 +33,18 @@ namespace AdventOfCode2020.Infrastructure
 
             foreach(var (sample, puzzle) in puzzleOutput.OrderBy(x => x.puzzle.Name))
             {
-                var sampleResult = ((bool?)sample.Result) ?? false ? checkMark : crossMark;
+                var sampleResult = (SampleResult)sample.Result;
+                string sampleText = checkMark;
+                if (!sampleResult.IsValid)
+                {
+                    sampleText = $"[red]{sampleResult.Actual}!={sampleResult.Expected}[/]";
+                }
+
                 var answerColor = puzzle.Result is null ? "grey" : "blue";
 
                 table.AddRow(
                     $"[green]{puzzle.Name}[/]",
-                    sampleResult,
+                    sampleText,
                     $"[{answerColor}]{(puzzle.Result?.ToString() ?? "N/A")}[/]",
                     $"{puzzle.Duration.TotalMilliseconds + sample.Duration.TotalMilliseconds}ms",
                     $"[red]{(puzzle.Exception?.Message ?? "")}[/]");

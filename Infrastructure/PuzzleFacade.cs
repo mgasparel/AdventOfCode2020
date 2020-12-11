@@ -29,13 +29,13 @@ namespace AdventOfCode2020.Infrastructure
         /// <returns>
         ///     Returns a value indicating whether the sample answer matched the expected answer.
         /// </returns>
-        public bool ValidateSample()
+        public SampleResult ValidateSample()
         {
             var instance = (T)Activator.CreateInstance(typeof(T));
 
             var parsedInput = GetParsedInput(sampleFile, typeof(T), instance!);
             MethodInfo? validate = typeof(T).GetMethod("ValidateSample");
-            return (bool)validate!.Invoke(instance, new[] { parsedInput })!;
+            return (SampleResult)validate!.Invoke(instance, new[] { parsedInput })!;
         }
 
         /// <summary>

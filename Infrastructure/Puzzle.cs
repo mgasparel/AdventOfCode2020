@@ -51,7 +51,10 @@ namespace AdventOfCode2020.Infrastructure
         /// <returns>
         ///     Returns a value indicating whether your solution resulted in the expected sample answer.
         /// </returns>
-        public virtual bool ValidateSample(TInput input)
-            => EqualityComparer<TAnswer>.Default.Equals(Solve(input), SampleAnswer);
+        public virtual SampleResult ValidateSample(TInput input)
+        {
+            TAnswer answer = Solve(input);
+            return new SampleResult(EqualityComparer<TAnswer>.Default.Equals(answer, SampleAnswer), SampleAnswer, answer);
+        }
     }
 }
