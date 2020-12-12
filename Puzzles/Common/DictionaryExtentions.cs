@@ -19,4 +19,3 @@ namespace AdventOfCode2020.Puzzles.Common
         }
     }
 }
-

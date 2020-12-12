@@ -20,7 +20,7 @@ namespace AdventOfCode2020.Puzzles.Day03
         {
             int trees = 0;
             Point lastPosition;
-            while(true)
+            while (true)
             {
                 lastPosition = input.Position;
                 input.Move(3, 1);

@@ -6,29 +6,29 @@ using AdventOfCode2020.Infrastructure;
 namespace AdventOfCode2020.Runner
 {
     /// <summary>
-    ///     Builds, runs, and displays the output of puzzles found by the <see cref="PuzzleLocator"/>.
+    ///     Builds, runs, and displays the output of puzzles found by the <see cref="Infrastructure.PuzzleLocator"/>.
     /// </summary>
     public class PuzzleRunner
     {
-        readonly PuzzleLocator puzzleLocator;
-        readonly PuzzleFactory puzzleFactory;
+        readonly PuzzleLocator PuzzleLocator;
+        readonly PuzzleFactory PuzzleFactory;
 
         public PuzzleRunner(PuzzleFactory puzzleFactory, PuzzleLocator puzzleLocator)
         {
-            this.puzzleFactory = puzzleFactory;
-            this.puzzleLocator = puzzleLocator;
+            PuzzleFactory = puzzleFactory;
+            PuzzleLocator = puzzleLocator;
         }
 
         /// <summary>
-        ///     Runs all puzzles found by the <see cref="PuzzleLocator"/> and displays their output.
+        ///     Runs all puzzles found by the <see cref="Infrastructure.PuzzleLocator"/> and displays their output.
         /// </summary>
         public void Run()
         {
             var output = new List<(PuzzleOutput sample, PuzzleOutput puzzle)>();
-            foreach(var puzzleGenericType in puzzleLocator.Puzzles)
+            foreach (Type? puzzleGenericType in PuzzleLocator.Puzzles)
             {
-                var puzzle = puzzleFactory.Build(puzzleGenericType);
-                var name = puzzleGenericType?.FullName ?? "N/A";
+                dynamic puzzle = PuzzleFactory.Build(puzzleGenericType);
+                string? name = puzzleGenericType?.FullName ?? "N/A";
 
                 output.Add(
                     (
@@ -52,7 +52,7 @@ namespace AdventOfCode2020.Runner
         /// <returns>
         ///     A <see cref="PuzzleOutput"/> that contains the results of the Puzzle.
         /// </returns>
-        PuzzleOutput Run(string puzzleName, Func<object?> func)
+        static PuzzleOutput Run(string puzzleName, Func<object?> func)
         {
             var sw = new Stopwatch();
             sw.Start();
@@ -63,7 +63,7 @@ namespace AdventOfCode2020.Runner
             {
                 retVal = func();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 caughtException = e;
             }

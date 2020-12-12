@@ -9,8 +9,7 @@ namespace AdventOfCode2020.Infrastructure
     /// </summary>
     public class OutputRenderer
     {
-        const string checkMark = "✔";
-        const string crossMark = "❌";
+        const string CheckMark = "✔";
 
         /// <summary>
         ///     Displays puzzle results in a formatted table.
@@ -23,31 +22,31 @@ namespace AdventOfCode2020.Infrastructure
             System.Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             var table = new Table();
-            table.AddColumn("Puzzle");
-            table.AddColumn("Sample");
-            table.AddColumn("Answer");
-            table.AddColumn("Duration");
-            table.AddColumn("Exception");
+            _ = table.AddColumn("Puzzle");
+            _ = table.AddColumn("Sample");
+            _ = table.AddColumn("Answer");
+            _ = table.AddColumn("Duration");
+            _ = table.AddColumn("Exception");
 
-            table.Columns[1].Alignment(Justify.Center);
+            _ = table.Columns[1].Alignment(Justify.Center);
 
-            foreach(var (sample, puzzle) in puzzleOutput.OrderBy(x => x.puzzle.Name))
+            foreach ((PuzzleOutput sample, PuzzleOutput puzzle) in puzzleOutput.OrderBy(x => x.puzzle.Name))
             {
-                var sampleResult = (SampleResult)sample.Result;
-                string sampleText = checkMark;
+                SampleResult? sampleResult = (SampleResult?)sample?.Result ?? throw new System.Exception("SampleResult was null!");
+                string sampleText = CheckMark;
                 if (!sampleResult.IsValid)
                 {
                     sampleText = $"[red]{sampleResult.Actual}!={sampleResult.Expected}[/]";
                 }
 
-                var answerColor = puzzle.Result is null ? "grey" : "blue";
+                string? answerColor = puzzle.Result is null ? "grey" : "blue";
 
-                table.AddRow(
+                _ = table.AddRow(
                     $"[green]{puzzle.Name}[/]",
                     sampleText,
-                    $"[{answerColor}]{(puzzle.Result?.ToString() ?? "N/A")}[/]",
+                    $"[{answerColor}]{puzzle.Result?.ToString() ?? "N/A"}[/]",
                     $"{puzzle.Duration.TotalMilliseconds + sample.Duration.TotalMilliseconds}ms",
-                    $"[red]{(puzzle.Exception?.Message ?? "")}[/]");
+                    $"[red]{puzzle.Exception?.Message ?? ""}[/]");
             }
 
             AnsiConsole.Render(table);

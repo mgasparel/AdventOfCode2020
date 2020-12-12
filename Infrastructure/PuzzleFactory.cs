@@ -7,7 +7,7 @@ namespace AdventOfCode2020.Infrastructure
     /// </summary>
     public class PuzzleFactory
     {
-        Type puzzleType = typeof(PuzzleFacade<>);
+        readonly Type PuzzleType = typeof(PuzzleFacade<>);
 
         /// <summary>
         ///     Create a new instance of <see cref="PuzzleFacade"/> using the generic arguments provided.
@@ -20,15 +20,12 @@ namespace AdventOfCode2020.Infrastructure
         /// </returns>
         public dynamic Build(Type puzzleGenericType)
         {
-            Type constructed = puzzleType.MakeGenericType(new Type[] { puzzleGenericType });
+            Type constructed = PuzzleType.MakeGenericType(new Type[] { puzzleGenericType });
             dynamic instance = Activator.CreateInstance(constructed)!;
 
-            if (instance is null || puzzleGenericType.FullName is null)
-            {
-                throw new Exception($"Error building puzzle for type: {puzzleGenericType}");
-            }
-
-            return instance;
+            return instance is null || puzzleGenericType.FullName is null
+                ? throw new Exception($"Error building puzzle for type: {puzzleGenericType}")
+                : instance;
         }
     }
 }

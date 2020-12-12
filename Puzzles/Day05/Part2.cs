@@ -8,17 +8,17 @@ namespace AdventOfCode2020.Puzzles.Day05
     {
         public override int Solve(IEnumerable<BoardingInstructions> input)
         {
-            var seats = input.Select(x => x.SeatId).OrderBy(x => x).ToArray();
+            int[]? seats = input.Select(x => x.SeatId).OrderBy(x => x).ToArray();
 
-            for(int i = 0; i < seats.Length; i++)
+            for (int i = 0; i < seats.Length; i++)
             {
                 // Ignore front and back of plane.
-                if(i == 0 || i == seats.Length)
+                if (i == 0 || i == seats.Length)
                 {
                     continue;
                 }
 
-                if(seats[i] + 1 != seats[i + 1])
+                if (seats[i] + 1 != seats[i + 1])
                 {
                     return seats[i] + 1;
                 }
@@ -29,7 +29,7 @@ namespace AdventOfCode2020.Puzzles.Day05
 
         // No sample provided.
         public override SampleResult ValidateSample(IEnumerable<BoardingInstructions> input)
-            => new SampleResult(true, null, null);
+            => new SampleResult(true, new object(), new object());
     }
 }
 

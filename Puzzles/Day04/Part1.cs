@@ -17,9 +17,9 @@ namespace AdventOfCode2020.Puzzles.Day04
                 .Select(ParsePassport);
         }
 
-        protected Passport ParsePassport(string chunk)
+        protected static Passport ParsePassport(string chunk)
         {
-            var keyValuePairs = chunk
+            IEnumerable<KeyValuePair<string, string>>? keyValuePairs = chunk
                 .Replace(Environment.NewLine, " ")
                 .TrimEnd()
                 .Split(' ')

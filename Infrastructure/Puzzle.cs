@@ -54,7 +54,7 @@ namespace AdventOfCode2020.Infrastructure
         public virtual SampleResult ValidateSample(TInput input)
         {
             TAnswer answer = Solve(input);
-            return new SampleResult(EqualityComparer<TAnswer>.Default.Equals(answer, SampleAnswer), SampleAnswer, answer);
+            return new SampleResult(EqualityComparer<TAnswer>.Default.Equals(answer, SampleAnswer), SampleAnswer!, answer!);
         }
     }
 }

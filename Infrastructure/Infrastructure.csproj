@@ -9,4 +9,7 @@
     <PackageReference Include="Spectre.Console" Version="0.32.1" />
   </ItemGroup>
 
+  <PropertyGroup>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
 </Project>

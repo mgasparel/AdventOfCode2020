@@ -36,7 +36,7 @@ namespace AdventOfCode2020.Puzzles.Day02
                 .Where(tup => IsPassValid(tup.pass, tup.pol))
                 .Count();
 
-        bool IsPassValid(Password password, Policy policy)
+        static bool IsPassValid(Password password, Policy policy)
         {
             int count = password.Value
                 .Where(c => c == policy.Character)

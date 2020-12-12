@@ -13,7 +13,7 @@ namespace AdventOfCode2020.Puzzles.Day08
             int count = input.Count();
             for (int i = 0; i < count; i++)
             {
-                var aInput = input.ToArray();
+                Instruction[]? aInput = input.ToArray();
                 var bootSeq = new BootSequence();
 
                 SwapOp(ref aInput[i]);
@@ -27,9 +27,7 @@ namespace AdventOfCode2020.Puzzles.Day08
             throw new Exception("no solution found!");
         }
 
-        private void SwapOp(ref Instruction instruction)
-        {
-            instruction = instruction with { Operation = instruction.Operation == "nop" ? "jmp" : "nop" };
-        }
+        static void SwapOp(ref Instruction instruction)
+            => instruction = instruction with { Operation = instruction.Operation == "nop" ? "jmp" : "nop" };
     }
 }

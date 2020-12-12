@@ -7,7 +7,7 @@ namespace AdventOfCode2020.Puzzles.Day01
 {
     public class Part1 : Puzzle<IEnumerable<int>, int>
     {
-        const int target = 2020;
+        const int Target = 2020;
 
         public override int SampleAnswer => 514579;
 
@@ -15,15 +15,15 @@ namespace AdventOfCode2020.Puzzles.Day01
             => rawInput
                 .Split(Environment.NewLine)
                 .Where(line => line.Length > 0)
-                .Select(line => int.Parse(line));
+                .Select(int.Parse);
 
         public override int Solve(IEnumerable<int> input)
         {
-            foreach(var a in input)
+            foreach (int a in input)
             {
-                foreach(var b in input)
+                foreach (int b in input)
                 {
-                    if (a + b == target)
+                    if (a + b == Target)
                     {
                         return a * b;
                     }

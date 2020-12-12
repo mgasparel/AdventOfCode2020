@@ -10,7 +10,7 @@ namespace AdventOfCode2020.Infrastructure
     /// </summary>
     public class PuzzleLocator
     {
-        public HashSet<Type> Puzzles;
+        public HashSet<Type> Puzzles { get; }
 
         public PuzzleLocator()
         {
@@ -24,9 +24,9 @@ namespace AdventOfCode2020.Infrastructure
         static bool InheritsGeneric(Type t, Type generic)
         {
             Type? baseType = t.BaseType;
-            while(baseType is not null && baseType != typeof(object))
+            while (baseType is not null && baseType != typeof(object))
             {
-                var typeDef = baseType.IsGenericType ? baseType.GetGenericTypeDefinition() : null;
+                Type? typeDef = baseType.IsGenericType ? baseType.GetGenericTypeDefinition() : null;
 
                 if (typeDef == generic)
                 {

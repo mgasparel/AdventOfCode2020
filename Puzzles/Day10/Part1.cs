@@ -1,5 +1,4 @@
 using AdventOfCode2020.Infrastructure;
-using AdventOfCode2020.Puzzles.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,18 +13,18 @@ namespace AdventOfCode2020.Puzzles.Day10
             => rawInput
                 .Split(Environment.NewLine)
                 .Where(line => line.Length > 0)
-                .Select(line => int.Parse(line));
+                .Select(int.Parse);
 
         public override long Solve(IEnumerable<int> input)
         {
-            var deltas = GetDeltas(input.OrderBy(x => x).ToArray());
+            int[]? deltas = GetDeltas(input.OrderBy(x => x).ToArray());
             return deltas.Count(x => x == 1) * deltas.Count(x => x == 3);
         }
 
-        protected int[] GetDeltas(int[] values)
+        protected static int[] GetDeltas(int[] values)
         {
-            var deltas = new int[values.Length + 1];
-            for (var i = 1; i < values.Length; i++)
+            int[]? deltas = new int[values.Length + 1];
+            for (int i = 1; i < values.Length; i++)
             {
                 deltas[i] = values[i] - values[i - 1];
             }

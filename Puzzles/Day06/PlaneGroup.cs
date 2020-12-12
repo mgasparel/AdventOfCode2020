@@ -5,19 +5,19 @@ namespace AdventOfCode2020.Puzzles.Day06
 {
     public class PlaneGroup
     {
-        List<string> answers;
+        readonly List<string> Answers;
 
         public PlaneGroup(IEnumerable<string> answers)
         {
-            this.answers = answers.ToList();
+            Answers = answers.ToList();
         }
 
         public int CountDistinctAnswers()
-            => new HashSet<char>(answers.SelectMany(a => a))
-                .Count();
+            => new HashSet<char>(Answers.SelectMany(a => a))
+                .Count;
 
         public int CountIntersectingAnswers()
-            => answers.First()
-                .Count(c => answers.All(a => a.Contains(c)));
+            => Answers.First()
+                .Count(c => Answers.All(a => a.Contains(c)));
     }
 }

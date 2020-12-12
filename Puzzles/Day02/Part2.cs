@@ -12,7 +12,7 @@ namespace AdventOfCode2020.Puzzles.Day02
                 .Where(tup => IsPassValid(tup.pass, tup.pol))
                 .Count();
 
-        bool IsPassValid(Password password, Policy policy)
+        static bool IsPassValid(Password password, Policy policy)
             => (password.Value[policy.Min] == policy.Character)
                 ^ (password.Value[policy.Max] == policy.Character);
     }

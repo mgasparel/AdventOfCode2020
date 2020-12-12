@@ -8,13 +8,13 @@ namespace AdventOfCode2020.Puzzles.Day09
     {
         public override long SampleAnswer => 127;
 
-        protected int preamble = 25;
+        protected int Preamble { get; set; } = 25;
 
         public override long[] ParseInput(string rawInput)
             => rawInput
                 .Split(Environment.NewLine)
                 .Where(line => line.Length > 0)
-                .Select(line => long.Parse(line))
+                .Select(long.Parse)
                 .ToArray();
 
         public override long Solve(long[] input)
@@ -23,16 +23,16 @@ namespace AdventOfCode2020.Puzzles.Day09
         public override SampleResult ValidateSample(long[] input)
         {
             // First time we hit a sample with different params as the solution.
-            preamble = 5;
+            Preamble = 5;
 
             return base.ValidateSample(input);
         }
 
         protected long? FindInvalidNumber(long[] input)
         {
-            for(int i = preamble; i < input.Length; i++)
+            for (int i = Preamble; i < input.Length; i++)
             {
-                var window = input[(i - preamble)..(i)];
+                long[]? window = input[(i - Preamble)..(i)];
 
                 if (TargetSumExistsInWindow(input[i], window) == false)
                 {
@@ -43,10 +43,10 @@ namespace AdventOfCode2020.Puzzles.Day09
             return null;    // not found
         }
 
-        private bool TargetSumExistsInWindow(long target, long[] window)
+        static bool TargetSumExistsInWindow(long target, long[] window)
         {
             bool found = false;
-            for (var j = 0; j < window.Length; j++)
+            for (int j = 0; j < window.Length; j++)
             {
                 // Bail early. One half of the sum is already greater than the result.
                 if (window[j] > target)

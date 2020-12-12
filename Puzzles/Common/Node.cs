@@ -9,7 +9,7 @@ namespace AdventOfCode2020.Puzzles.Common
 
         public T Value { get; }
 
-        public List<Node<T>> Children { get; private set; } = new ();
+        public List<Node<T>> Children { get; private set; } = new();
 
         public Node(string name, T value)
         {

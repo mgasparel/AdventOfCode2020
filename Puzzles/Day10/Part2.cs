@@ -11,14 +11,14 @@ namespace AdventOfCode2020.Puzzles.Day10
         {
             int[] deltas = GetDeltas(input.OrderBy(x => x).ToArray());
 
-            return  GetContiguousOnesCounts(deltas)
+            return GetContiguousOnesCounts(deltas)
                 .Aggregate(1L, (sum, cur) => sum *= PossibleCombinations(cur));
         }
 
-        IEnumerable<int> GetContiguousOnesCounts(IEnumerable<int> deltas)
+        private static IEnumerable<int> GetContiguousOnesCounts(IEnumerable<int> deltas)
         {
             int contiguousOnes = 0;
-            foreach(var delta in deltas)
+            foreach (int delta in deltas)
             {
                 if (delta == 1)
                 {
@@ -36,9 +36,8 @@ namespace AdventOfCode2020.Puzzles.Day10
             }
         }
 
-        long PossibleCombinations(int seqLength)
-            => seqLength switch
-            {
+        static long PossibleCombinations(int seqLength)
+            => seqLength switch {
                 1 => 1,
                 2 => 2,
                 3 => 4,

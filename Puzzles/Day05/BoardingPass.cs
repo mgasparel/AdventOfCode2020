@@ -5,31 +5,32 @@ namespace AdventOfCode2020.Puzzles.Day05
 {
     public class BoardingInstructions
     {
-        string columnInstructions { get; }
-        string rowInstructions { get; }
-        IEnumerable<int> rows = Enumerable.Range(0, 128);
-        IEnumerable<int> cols = Enumerable.Range(0, 8);
-        public int SeatId => LocateRow() * 8 + LocateColumn();
+        string ColumnInstructions { get; }
+        string RowInstructions { get; }
+
+        readonly IEnumerable<int> Rows = Enumerable.Range(0, 128);
+        readonly IEnumerable<int> Cols = Enumerable.Range(0, 8);
+        public int SeatId => (LocateRow() * 8) + LocateColumn();
 
         public BoardingInstructions(string instructions)
         {
-            columnInstructions = instructions[^3..];
-            rowInstructions = instructions[..7];
+            ColumnInstructions = instructions[^3..];
+            RowInstructions = instructions[..7];
         }
 
         int LocateRow()
-            => Locate(rows, rowInstructions, 'B');
+            => Locate(Rows, RowInstructions, 'B');
 
         int LocateColumn()
-            => Locate(cols, columnInstructions, 'R');
+            => Locate(Cols, ColumnInstructions, 'R');
 
-        int Locate(IEnumerable<int> items, string instructions, char upperIndicator)
+        static int Locate(IEnumerable<int> items, string instructions, char upperIndicator)
         {
-            var current = items;
-            var size = items.Count();
-            foreach(var c in instructions)
+            IEnumerable<int>? current = items;
+            int size = items.Count();
+            foreach (char c in instructions)
             {
-                size = size / 2;
+                size /= 2;
 
                 if (c == upperIndicator)
                 {

@@ -5,7 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 var serviceCollection = new ServiceCollection();
 RegisterServices(serviceCollection);
 
-using(var services = serviceCollection.BuildServiceProvider())
+using (ServiceProvider? services = serviceCollection.BuildServiceProvider())
 {
     services
         .GetRequiredService<PuzzleRunner>()
@@ -14,7 +14,8 @@ using(var services = serviceCollection.BuildServiceProvider())
 
 static void RegisterServices(IServiceCollection services)
 {
-    services.AddSingleton(typeof(PuzzleRunner));
-    services.AddSingleton(typeof(PuzzleLocator));
-    services.AddSingleton(typeof(PuzzleFactory));
+    _ = services
+        .AddSingleton(typeof(PuzzleRunner))
+        .AddSingleton(typeof(PuzzleLocator))
+        .AddSingleton(typeof(PuzzleFactory));
 }

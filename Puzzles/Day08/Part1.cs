@@ -18,7 +18,7 @@ namespace AdventOfCode2020.Puzzles.Day08
         Instruction ParseInstruction(string line)
         {
             string op = line[..3];
-            int.TryParse(line[4..], out int val);
+            int val = int.Parse(line[4..]);
 
             return new Instruction(op, val);
         }
@@ -26,7 +26,7 @@ namespace AdventOfCode2020.Puzzles.Day08
         public override int Solve(IEnumerable<Instruction> input)
         {
             var bootSeq = new BootSequence();
-            bootSeq.Run(input.ToArray());
+            _ = bootSeq.Run(input.ToArray());
             return bootSeq.Accumulator;
         }
     }

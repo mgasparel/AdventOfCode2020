@@ -4,16 +4,16 @@ namespace AdventOfCode2020.Puzzles.Day08
 {
     public class BootSequence
     {
-        List<int> history = new();
+        readonly List<int> History = new();
 
         public int Accumulator { get; private set; }
 
         public bool Run(Instruction[] instructions)
         {
             int i = 0;
-            while(i < instructions.Length)
+            while (i < instructions.Length)
             {
-                if (history.Contains(i))
+                if (History.Contains(i))
                 {
                     return false;
                 }
@@ -21,16 +21,16 @@ namespace AdventOfCode2020.Puzzles.Day08
                 switch (instructions[i].Operation)
                 {
                     case "nop":
-                        history.Add(i);
+                        History.Add(i);
                         i++;
                         break;
                     case "acc":
-                        history.Add(i);
+                        History.Add(i);
                         Accumulator += instructions[i].Value;
                         i++;
                         break;
                     case "jmp":
-                        history.Add(i);
+                        History.Add(i);
                         i += instructions[i].Value;
                         break;
                     default:

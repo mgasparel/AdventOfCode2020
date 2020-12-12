@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using AdventOfCode2020.Puzzles.Common;
 
@@ -8,25 +9,26 @@ namespace AdventOfCode2020.Puzzles.Day03
     {
         public override long SampleAnswer => 336;
 
-        List<(int right, int down)> scenarios = new()
-            {
-                (1, 1),
-                (3, 1),
-                (5, 1),
-                (7, 1),
-                (1, 2)
-            };
+        private readonly List<(int right, int down)> Scenarios = new()
+        {
+            (1, 1),
+            (3, 1),
+            (5, 1),
+            (7, 1),
+            (1, 2)
+        };
 
         public override long Solve(RepeatingMap input)
-            => scenarios.Aggregate(1L, (agg, cur) => agg *= SolveWithSlope(input, cur.right, cur.down));
+            => Scenarios.Aggregate(1L, (agg, cur) => agg *= SolveWithSlope(input, cur.right, cur.down));
 
-        long SolveWithSlope(RepeatingMap map, int right, int down)
+        [SuppressMessage("Possible Unintended Reference Comparison", "CS0252", Justification = "False positive")]
+        private static long SolveWithSlope(RepeatingMap map, int right, int down)
         {
             map.Reset();
 
             int trees = 0;
             Point lastPosition;
-            while(true)
+            while (true)
             {
                 lastPosition = map.Position;
                 map.Move(right, down);

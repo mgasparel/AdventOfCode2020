@@ -10,17 +10,17 @@ namespace AdventOfCode2020.Infrastructure
     /// <typeparam name="T"></typeparam>
     public class PuzzleFacade<T>
     {
-        public static string rootPath = @"..\";
-        readonly string sampleFile;
-        readonly string inputFile;
-        readonly string puzzlePath;
+        public const string RootPath = @"..\";
+        readonly string SampleFile;
+        readonly string InputFile;
+        readonly string PuzzlePath;
 
         public PuzzleFacade()
         {
             string day = typeof(T).Namespace!.Split('.')[^1];
-            puzzlePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(rootPath, "Puzzles", day, "Input"));
-            sampleFile = System.IO.Path.Combine(puzzlePath, "sample.txt");
-            inputFile = System.IO.Path.Combine(puzzlePath, "input.txt");
+            PuzzlePath = System.IO.Path.GetFullPath(System.IO.Path.Combine(RootPath, "Puzzles", day, "Input"));
+            SampleFile = System.IO.Path.Combine(PuzzlePath, "sample.txt");
+            InputFile = System.IO.Path.Combine(PuzzlePath, "input.txt");
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace AdventOfCode2020.Infrastructure
         {
             var instance = (T)Activator.CreateInstance(typeof(T));
 
-            var parsedInput = GetParsedInput(sampleFile, typeof(T), instance!);
+            object? parsedInput = PuzzleFacade<T>.GetParsedInput(SampleFile, typeof(T), instance!);
             MethodInfo? validate = typeof(T).GetMethod("ValidateSample");
             return (SampleResult)validate!.Invoke(instance, new[] { parsedInput })!;
         }
@@ -50,12 +50,12 @@ namespace AdventOfCode2020.Infrastructure
         {
             var instance = (T)Activator.CreateInstance(typeof(T));
 
-            var parsedInput = GetParsedInput(inputFile, typeof(T), instance!);
+            object? parsedInput = PuzzleFacade<T>.GetParsedInput(InputFile, typeof(T), instance!);
             MethodInfo? solve = typeof(T).GetMethod("Solve");
             return solve!.Invoke(instance, new[] { parsedInput })!;
         }
 
-        object GetParsedInput(string fileName, Type type, object instance)
+        static object GetParsedInput(string fileName, Type type, object instance)
         {
             string input = System.IO.File.ReadAllText(fileName);
 

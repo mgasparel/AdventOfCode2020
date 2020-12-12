@@ -21,12 +21,12 @@ namespace AdventOfCode2020.Puzzles.Day07
 
         Node<Bag> ParseBagDescription(string description)
         {
-            var parts = description.Split(" bags contain ");
-            var name = parts[0];
+            string[]? parts = description.Split(" bags contain ");
+            string? name = parts[0];
 
             var node = new Node<Bag>(name, new Bag(name));
 
-            var innerBagNodes = parts[1]
+            IEnumerable<Node<Bag>>? innerBagNodes = parts[1]
                 .Split(',')
                 .Where(description => description != "no other bags.")
                 .Select(bag => bag.TrimStart())
@@ -38,11 +38,11 @@ namespace AdventOfCode2020.Puzzles.Day07
             return node;
         }
 
-        Bag ParseBagContents(string contents)
+        static Bag ParseBagContents(string contents)
         {
             int space = contents.IndexOf(' ');
             string name = contents[(space + 1)..contents.LastIndexOf(' ')];
-            int.TryParse(contents[..space], out int count);
+            int count = int.Parse(contents[..space]);
 
             return new Bag(name, count);
         }
