@@ -17,9 +17,9 @@ namespace AdventOfCode2020.Infrastructure
         /// <param name="puzzleOutput">
         ///     A list of puzzle results to be displayed.
         /// </param>
-        public static void RenderResults(List<(PuzzleOutput sample, PuzzleOutput puzzle)> puzzleOutput)
+        public static void RenderResults(IEnumerable<(PuzzleOutput sample, PuzzleOutput puzzle)> puzzleOutput)
         {
-            System.Console.OutputEncoding = System.Text.Encoding.UTF8;
+            //System.Console.OutputEncoding = System.Text.Encoding.UTF8;
 
             var table = new Table();
             _ = table.AddColumn("Puzzle");

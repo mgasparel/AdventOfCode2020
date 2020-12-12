@@ -1,7 +1,12 @@
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using AdventOfCode2020.Infrastructure;
+using Spectre.Console;
 
 namespace AdventOfCode2020.Runner
 {
@@ -24,18 +29,48 @@ namespace AdventOfCode2020.Runner
         /// </summary>
         public void Run()
         {
-            var output = new List<(PuzzleOutput sample, PuzzleOutput puzzle)>();
-            foreach (Type? puzzleGenericType in PuzzleLocator.Puzzles)
-            {
+            var output = new ConcurrentBag<(PuzzleOutput sample, PuzzleOutput puzzle)>();
+            var cts = new CancellationTokenSource();
+            CancellationToken token = cts.Token;
+
+            // Give us 20s to run all tests, and bail after that.
+            cts.CancelAfter(20_000);
+
+            int completed = 0;
+            var progressTask = Task.Run(() =>
+                AnsiConsole.Progress()
+                    .AutoClear(true)
+                    .Columns(new ProgressColumn[]
+                    {
+                        new TaskDescriptionColumn(),    // Task description
+                        new ProgressBarColumn(),        // Progress bar
+                        new SpinnerColumn(),            // Spinner
+                    })
+                    .Start(ctx => {
+                        ProgressTask task1 = ctx.AddTask("[blue]Vacationing in the tropics[/]");
+                        task1.MaxValue = PuzzleLocator.Puzzles.Count - 100;
+                        task1.StartTask();
+                        while (!ctx.IsFinished && !token.IsCancellationRequested)
+                        {
+                            double increment = completed - task1.Value;
+                            task1.Increment(increment);
+                        }
+                    }), token);
+
+            _ = PuzzleLocator.Puzzles.ParallelForEachAsync(async (puzzleGenericType) => {
                 dynamic puzzle = PuzzleFactory.Build(puzzleGenericType);
                 string? name = puzzleGenericType?.FullName ?? "N/A";
 
                 output.Add(
                     (
-                        Run(name, () => puzzle.ValidateSample()),
-                        Run(name, () => puzzle.Solve())
+                        await RunAsync(name, () => puzzle.ValidateSample(), token),
+                        await RunAsync(name, () => puzzle.Solve(), token)
                     ));
-            }
+
+                Interlocked.Increment(ref completed);
+            });
+
+            progressTask.GetAwaiter().GetResult();
 
             OutputRenderer.RenderResults(output);
         }
@@ -52,7 +87,7 @@ namespace AdventOfCode2020.Runner
         /// <returns>
         ///     A <see cref="PuzzleOutput"/> that contains the results of the Puzzle.
         /// </returns>
-        static PuzzleOutput Run(string puzzleName, Func<object?> func)
+        static async Task<PuzzleOutput> RunAsync(string puzzleName, Func<object?> func, CancellationToken cancellationToken)
         {
             var sw = new Stopwatch();
             sw.Start();
@@ -61,7 +96,8 @@ namespace AdventOfCode2020.Runner
             Exception? caughtException = null;
             try
             {
-                retVal = func();
+                var t = Task.Run(() => func(), cancellationToken);
+                retVal = await t;
             }
             catch (Exception e)
             {
