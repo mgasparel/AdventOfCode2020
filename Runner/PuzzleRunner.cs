@@ -30,6 +30,7 @@ namespace AdventOfCode2020.Runner
         public void Run()
         {
             var output = new ConcurrentBag<(PuzzleOutput sample, PuzzleOutput puzzle)>();
+            var sw = new Stopwatch();
             var cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
 
@@ -57,6 +58,7 @@ namespace AdventOfCode2020.Runner
                         }
                     }), token);
 
+            sw.Start();
             _ = PuzzleLocator.Puzzles.ParallelForEachAsync(async (puzzleGenericType) => {
                 dynamic puzzle = PuzzleFactory.Build(puzzleGenericType);
                 string? name = puzzleGenericType?.FullName ?? "N/A";
@@ -69,10 +71,13 @@ namespace AdventOfCode2020.Runner
 
                 Interlocked.Increment(ref completed);
             });
+            sw.Stop();
 
             progressTask.GetAwaiter().GetResult();
 
             OutputRenderer.RenderResults(output);
+
+            AnsiConsole.Console.MarkupLine($"[yellow]Advent of Code 2020 - Total Run Time: [/][teal]{sw.ElapsedMilliseconds}ms[/]");
         }
 
         /// <summary>
