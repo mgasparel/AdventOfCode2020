@@ -60,7 +60,7 @@ namespace AdventOfCode2020.Runner
                     }), token);
 
             sw.Start();
-            _ = PuzzleLocator.Puzzles.ParallelForEachAsync(async (puzzleGenericType) =>
+            PuzzleLocator.Puzzles.ParallelForEachAsync(async (puzzleGenericType) =>
             {
                 dynamic puzzle = PuzzleFactory.Build(puzzleGenericType);
                 string? name = puzzleGenericType?.FullName ?? "N/A";
@@ -72,7 +72,7 @@ namespace AdventOfCode2020.Runner
                     ));
 
                 Interlocked.Increment(ref completed);
-            });
+            }).Wait();
             sw.Stop();
 
             progressTask.GetAwaiter().GetResult();
