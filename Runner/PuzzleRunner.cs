@@ -47,7 +47,8 @@ namespace AdventOfCode2020.Runner
                         new ProgressBarColumn(),        // Progress bar
                         new SpinnerColumn(),            // Spinner
                     })
-                    .Start(ctx => {
+                    .Start(ctx =>
+                    {
                         ProgressTask task1 = ctx.AddTask("[blue]Vacationing in the tropics[/]");
                         task1.MaxValue = PuzzleLocator.Puzzles.Count - 100;
                         task1.StartTask();
@@ -59,7 +60,8 @@ namespace AdventOfCode2020.Runner
                     }), token);
 
             sw.Start();
-            _ = PuzzleLocator.Puzzles.ParallelForEachAsync(async (puzzleGenericType) => {
+            _ = PuzzleLocator.Puzzles.ParallelForEachAsync(async (puzzleGenericType) =>
+            {
                 dynamic puzzle = PuzzleFactory.Build(puzzleGenericType);
                 string? name = puzzleGenericType?.FullName ?? "N/A";
 

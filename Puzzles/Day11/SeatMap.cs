@@ -14,8 +14,10 @@ namespace AdventOfCode2020.Puzzles.Day11
 
         readonly IAdjacentSeatStrategy AdjacentSeatStrategy;
 
-        public int OccupiedCount {
-            get {
+        public int OccupiedCount
+        {
+            get
+            {
                 int count = 0;
                 for (int row = 0; row < Seats.GetLength(0); row++)
                 {

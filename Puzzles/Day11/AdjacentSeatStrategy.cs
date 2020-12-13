@@ -6,8 +6,10 @@ namespace AdventOfCode2020.Puzzles.Day11
     {
         public int AdjacentThreshold { get; } = 4;
 
-        static IEnumerable<int> AdjacentSeatIndexes {
-            get {
+        static IEnumerable<int> AdjacentSeatIndexes
+        {
+            get
+            {
                 for (int i = 0; i < 9; i++)
                 {
                     if (i == 4)
