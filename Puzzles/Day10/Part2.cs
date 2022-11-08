@@ -37,7 +37,8 @@ namespace AdventOfCode2020.Puzzles.Day10
         }
 
         static long PossibleCombinations(int seqLength)
-            => seqLength switch {
+            => seqLength switch
+            {
                 1 => 1,
                 2 => 2,
                 3 => 4,

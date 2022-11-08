@@ -21,7 +21,8 @@ namespace AdventOfCode2020.Puzzles.Day04
             => IsValid() && Fields.All(f => IsFieldValid(f.Key, f.Value));
 
         bool IsFieldValid(string key, string value)
-            => key switch {
+            => key switch
+            {
                 "byr" => IsYearValid(value, 1920, 2002),
                 "iyr" => IsYearValid(value, 2010, 2020),
                 "eyr" => IsYearValid(value, 2020, 2030),

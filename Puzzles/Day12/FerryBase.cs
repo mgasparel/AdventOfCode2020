@@ -24,7 +24,8 @@ namespace AdventOfCode2020.Puzzles.Day12
         }
 
         protected Direction GetDirection(NavInstruction instruction)
-            => instruction.Action switch {
+            => instruction.Action switch
+            {
                 'N' => Direction.Up,
                 'S' => Direction.Down,
                 'E' => Direction.Right,
@@ -33,7 +34,8 @@ namespace AdventOfCode2020.Puzzles.Day12
             };
 
         protected static Point Move(Point p, Direction direction, int value)
-            => direction switch {
+            => direction switch
+            {
                 Direction.Up => new Point(p.X, p.Y + value),
                 Direction.Down => new Point(p.X, p.Y - value),
                 Direction.Left => new Point(p.X - value, p.Y),

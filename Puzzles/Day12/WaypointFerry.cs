@@ -35,7 +35,8 @@ namespace AdventOfCode2020.Puzzles.Day12
         }
 
         protected override void Rotate(char turnDirection)
-            => Waypoint = turnDirection switch {
+            => Waypoint = turnDirection switch
+            {
                 'L' => new Point(-1 * Waypoint.Y, Waypoint.X),
                 'R' => new Point(Waypoint.Y, -1 * Waypoint.X),
                 _ => throw new Exception($"turnDirection not supported: {turnDirection}")

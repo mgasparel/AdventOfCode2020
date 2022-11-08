@@ -12,7 +12,8 @@ namespace AdventOfCode2020.Puzzles.Day12
         protected override void Rotate(char turnDirection)
         {
             int iBearing = (int)Bearing;
-            Bearing = turnDirection switch {
+            Bearing = turnDirection switch
+            {
                 'L' => (Direction)((iBearing + 3) % 4),
                 'R' => (Direction)((iBearing + 1) % 4),
                 _ => Bearing

@@ -73,7 +73,7 @@ csharp_prefer_braces                                               = true : warn
 dotnet_sort_system_directives_first                                = false
 
 # C# formatting settings: https://docs.microsoft.com/en-us/visualstudio/ide/editorconfig-code-style-settings-reference#c-formatting-settings
-csharp_new_line_before_open_brace                                  = methods, control_blocks, types, accessors, local_functions, properties, lambdas
+csharp_new_line_before_open_brace                                  = all
 csharp_new_line_before_else                                        = true
 csharp_new_line_before_catch                                       = true
 csharp_new_line_before_finally                                     = true
