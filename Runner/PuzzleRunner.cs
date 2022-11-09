@@ -29,55 +29,85 @@ namespace AdventOfCode2020.Runner
         /// </summary>
         public void Run()
         {
-            var output = new ConcurrentBag<(PuzzleOutput sample, PuzzleOutput puzzle)>();
             var sw = new Stopwatch();
             var cts = new CancellationTokenSource();
             CancellationToken token = cts.Token;
+            const string checkMark = "✅";
 
             // Give us 20s to run all tests, and bail after that.
             cts.CancelAfter(20_000);
 
-            int completed = 0;
-            var progressTask = Task.Run(() =>
-                AnsiConsole.Progress()
-                    .AutoClear(true)
-                    .Columns(new ProgressColumn[]
-                    {
-                        new TaskDescriptionColumn(),    // Task description
-                        new ProgressBarColumn(),        // Progress bar
-                        new SpinnerColumn(),            // Spinner
-                    })
-                    .Start(ctx =>
-                    {
-                        ProgressTask task1 = ctx.AddTask("[blue]Vacationing in the tropics[/]");
-                        task1.MaxValue = PuzzleLocator.Puzzles.Count - 100;
-                        task1.StartTask();
-                        while (!ctx.IsFinished && !token.IsCancellationRequested)
-                        {
-                            double increment = completed - task1.Value;
-                            task1.Increment(increment);
-                        }
-                    }), token);
-
             sw.Start();
-            PuzzleLocator.Puzzles.ParallelForEachAsync(async (puzzleGenericType) =>
+            IOrderedEnumerable<Type> puzzles = PuzzleLocator.Puzzles.OrderBy(x => x.Name);
+            var progressTasks = new Dictionary<string, ProgressTask>();
+            var results = new Dictionary<string, (PuzzleOutput sample, PuzzleOutput puzzle)>();
+
+            AnsiConsole.Progress()
+                .AutoClear(true) // Hide list once all tasks are completed.
+                .Columns(new ProgressColumn[]
+                {
+                    new TaskDescriptionColumn(),
+                    new ProgressBarColumn()
+                    {
+                        IndeterminateStyle = new Style(Color.Red, Color.White)
+                    },
+                    new SpinnerColumn(Spinner.Known.Dots8Bit)
+                })
+                .StartAsync(async ctx =>
+                {
+                    foreach (Type puzzle in puzzles)
+                    {
+                        ProgressTask progressTask = ctx.AddTask(puzzle.FullName ?? "", autoStart: false);
+                        progressTasks.Add(puzzle.FullName!, progressTask);
+                    }
+
+                    await Parallel.ForEachAsync(puzzles, token, async (puzzleGenericType, ct) =>
+                    {
+                        dynamic puzzle = PuzzleFactory.Build(puzzleGenericType);
+                        string? name = puzzleGenericType?.FullName ?? "N/A";
+
+                        ProgressTask progressTask = progressTasks[name];
+                        progressTask.IsIndeterminate(true);
+                        _ = results.TryAdd(
+                            name,
+                            (
+                                await RunAsync(name, () => puzzle.ValidateSample(), token),
+                                await RunAsync(name, () => puzzle.Solve(), token)
+                            ));
+                        progressTask.Increment(100);
+                    });
+                }).Wait();
+
+            var table = new Table();
+            _ = table.AddColumn("Puzzle");
+            _ = table.AddColumn("Sample");
+            _ = table.AddColumn("Answer");
+            _ = table.AddColumn("Duration");
+            _ = table.AddColumn("Exception");
+
+            _ = table.Columns[1].Alignment(Justify.Center);
+
+            foreach ((PuzzleOutput sample, PuzzleOutput puzzle) in results.OrderBy(x => x.Key).Select(x => x.Value))
             {
-                dynamic puzzle = PuzzleFactory.Build(puzzleGenericType);
-                string? name = puzzleGenericType?.FullName ?? "N/A";
+                SampleResult? sampleResult = (SampleResult?)sample?.Result ?? throw new System.Exception("SampleResult was null!");
+                string sampleText = checkMark;
+                if (!sampleResult.IsValid)
+                {
+                    sampleText = $"[red]{sampleResult.Actual}!={sampleResult.Expected}[/]";
+                }
 
-                output.Add(
-                    (
-                        await RunAsync(name, () => puzzle.ValidateSample(), token),
-                        await RunAsync(name, () => puzzle.Solve(), token)
-                    ));
+                string? answerColor = puzzle.Result is null ? "grey" : "blue";
 
-                Interlocked.Increment(ref completed);
-            }).Wait();
+                _ = table.AddRow(
+                    $"[green]{puzzle.Name}[/]",
+                    sampleText,
+                    $"[{answerColor}]{puzzle.Result?.ToString() ?? "N/A"}[/]",
+                    $"{puzzle.Duration.TotalMilliseconds + sample.Duration.TotalMilliseconds}ms",
+                    $"[red]{puzzle.Exception?.Message ?? ""}[/]");
+            }
+
+            AnsiConsole.Write(table);
             sw.Stop();
-
-            progressTask.GetAwaiter().GetResult();
-
-            OutputRenderer.RenderResults(output);
 
             AnsiConsole.Console.MarkupLine($"[yellow]Advent of Code 2020 - Total Run Time: [/][teal]{sw.ElapsedMilliseconds}ms[/]");
         }
